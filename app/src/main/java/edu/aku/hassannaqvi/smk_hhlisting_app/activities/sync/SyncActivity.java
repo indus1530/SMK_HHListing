@@ -30,7 +30,7 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
 import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.ActivitySyncBinding;
 import edu.aku.hassannaqvi.smk_hhlisting_app.download.GetAllData;
-import edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses.SyncModel;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.SyncModel;
 import edu.aku.hassannaqvi.smk_hhlisting_app.sync.SyncAllData;
 import edu.aku.hassannaqvi.smk_hhlisting_app.sync.SyncDevice;
 

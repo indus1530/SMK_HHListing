@@ -1,4 +1,4 @@
-package edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses;
+package edu.aku.hassannaqvi.smk_hhlisting_app.other;
 
 /**
  * Created by hassan.naqvi on 10/19/2016.

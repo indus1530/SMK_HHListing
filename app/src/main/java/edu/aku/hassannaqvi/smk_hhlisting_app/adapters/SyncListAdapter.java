@@ -13,7 +13,7 @@ import java.util.List;
 
 import edu.aku.hassannaqvi.smk_hhlisting_app.R;
 import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.SyncListAdapterBinding;
-import edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses.SyncModel;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.SyncModel;
 
 public class SyncListAdapter extends RecyclerView.Adapter<SyncListAdapter.SyncListViewHolder> {
     List<SyncModel> synclist;

@@ -24,7 +24,7 @@ import java.util.List;
 
 import edu.aku.hassannaqvi.smk_hhlisting_app.adapters.UploadListAdapter;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
-import edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses.SyncModel;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.SyncModel;
 
 /**
  * Created by ali.azaz on 3/14/2018.

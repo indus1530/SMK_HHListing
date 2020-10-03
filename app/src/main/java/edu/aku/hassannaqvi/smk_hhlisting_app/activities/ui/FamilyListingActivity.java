@@ -18,7 +18,7 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.R;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
 import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.ActivityFamilyListingBinding;
-import edu.aku.hassannaqvi.smk_hhlisting_app.models.Members;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.models.Members;
 
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.lc;
 

@@ -1,4 +1,4 @@
-package edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses;
+package edu.aku.hassannaqvi.smk_hhlisting_app.other;
 
 import android.content.Context;
 import android.view.GestureDetector;

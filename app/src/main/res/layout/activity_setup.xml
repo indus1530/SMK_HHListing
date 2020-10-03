@@ -11,6 +11,10 @@
             name="callback"
             type="edu.aku.hassannaqvi.smk_hhlisting_app.activities.ui.SetupActivity" />
 
+        <variable
+            name="member"
+            type="edu.aku.hassannaqvi.smk_hhlisting_app.other.models.Members" />
+
     </data>
 
     <ScrollView
@@ -26,8 +30,7 @@
 
             <LinearLayout
                 android:id="@+id/fldGrpSecA01"
-                style="@style/linearlayout_view_wt_bound"
-                android:layoutDirection="rtl">
+                style="@style/linearlayout_view_wt_bound">
 
                 <androidx.cardview.widget.CardView style="@style/cardView">
 
@@ -45,6 +48,7 @@
                             android:id="@+id/hh02"
                             style="@style/i_textview"
                             android:background="@color/white"
+                            android:text="@{member.txtClusterCode}"
                             android:textAlignment="center"
                             android:textColor="@color/black" />
 
@@ -52,23 +56,31 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <TextView
-                    style="@style/textView3Head"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/hh03" />
+                <androidx.cardview.widget.CardView style="@style/cardView">
 
-                <TextView
-                    android:id="@+id/hh03"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_weight="3"
-                    android:background="@null"
-                    android:gravity="center"
-                    android:text="@string/hh03"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/_22sdp"
-                    android:textStyle="bold" />
+                    <LinearLayout
+                        style="@style/linearlayout_view_wt_bound"
+                        android:layout_marginTop="24dp">
+
+                        <TextView
+                            style="@style/textView3Head"
+                            android:text="@string/hh03" />
+
+                        <TextView
+                            android:id="@+id/hh03"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:gravity="center"
+                            android:text="@{member.txtStructureNo}"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/_22sdp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
 
                 <androidx.cardview.widget.CardView style="@style/cardView">
 

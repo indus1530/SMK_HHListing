@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.ListingContract;
-import edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses.TypefaceUtil;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.TypefaceUtil;
 
 /**
  * Created by hassan.naqvi on 10/15/2016.

@@ -26,7 +26,7 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.UsersContract;
 import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.VersionAppContract;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
-import edu.aku.hassannaqvi.smk_hhlisting_app.otherClasses.SyncModel;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.SyncModel;
 
 /**
  * Created by ali.azaz on 7/14/2017.

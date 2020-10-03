@@ -28,6 +28,7 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.ListingContract;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
 import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.ActivitySetupBinding;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.models.Members;
 
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.lc;
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.userEmail;
@@ -44,45 +45,49 @@ public class SetupActivity extends AppCompatActivity {
         bi = DataBindingUtil.setContentView(this, R.layout.activity_setup);
         bi.setCallback(this);
 
-        bi.hh02.setText(MainApp.clusterCode);
-        bi.hh02.setEnabled(false);
-
+        MainApp.hh07txt = "1";
         if (MainApp.hh02txt == null) {
             MainApp.hh03txt = 1;
         } else {
             MainApp.hh03txt++;
-            bi.hh02.setText(MainApp.clusterCode);
-            bi.hh02.setEnabled(false);
         }
-        MainApp.hh07txt = "1";
-        bi.hh03.setText(String.format(Locale.getDefault(), "%04d", MainApp.hh03txt));
+        Members.txtStructureNo.set(String.format(Locale.getDefault(), "%04d", MainApp.hh03txt));
 
         bi.hh04.setOnCheckedChangeListener((group, checkedId) -> {
-
-            if (bi.hh04a.isChecked()) {
-                MainApp.hh07txt = "1";
-            } else {
-                MainApp.hh07txt = "";
-            }
-
-            if (bi.hh04h.isChecked() || bi.hh04i.isChecked()) {
+            if (checkedId == bi.hh04h.getId() || checkedId == bi.hh04i.getId()) {
                 Clear.clearAllFields(bi.fldGrpHH12);
                 bi.fldGrpHH12.setVisibility(View.GONE);
                 bi.btnNextStructure.setVisibility(View.GONE);
                 bi.btnChangePSU.setVisibility(View.VISIBLE);
-                if (bi.hh04h.isChecked()) {
+                if (bi.hh04h.isChecked())
                     bi.btnChangePSU.setText(R.string.logout);
-                } else {
+                else
                     bi.btnChangePSU.setText(R.string.change_enumeration_block);
-                }
-            } else {
+            } else if (checkedId == bi.hh04a.getId()) {
                 bi.fldGrpHH12.setVisibility(View.VISIBLE);
                 bi.btnChangePSU.setVisibility(View.GONE);
+                bi.fldGrpHH04.setVisibility(View.VISIBLE);
+                bi.btnNextStructure.setVisibility(View.GONE);
+            } else {
+                Clear.clearAllFields(bi.fldGrpHH12);
+                bi.fldGrpHH12.setVisibility(View.GONE);
+                bi.hh05.setChecked(false);
+                bi.btnChangePSU.setVisibility(View.GONE);
+                bi.btnNextStructure.setVisibility(View.VISIBLE);
+            }
+        });
+
+        bi.hh05.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                bi.hh06.setVisibility(View.VISIBLE);
+                bi.hh06.requestFocus();
+            } else {
+                bi.hh06.setVisibility(View.GONE);
+                bi.hh06.setText(null);
             }
         });
 
         bi.hh14.setOnCheckedChangeListener((group, checkedId) -> {
-            MainApp.hh07txt = "1";
             if (bi.hh14a.isChecked()) {
                 bi.fldGrpHH04.setVisibility(View.VISIBLE);
                 bi.btnNextStructure.setVisibility(View.GONE);
@@ -92,17 +97,6 @@ public class SetupActivity extends AppCompatActivity {
                 bi.hh05.setChecked(false);
                 bi.hh06.setText(null);
                 bi.btnNextStructure.setVisibility(View.VISIBLE);
-            }
-        });
-
-        bi.hh05.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            MainApp.hh07txt = "1";
-            if (isChecked) {
-                bi.hh06.setVisibility(View.VISIBLE);
-                bi.hh06.requestFocus();
-            } else {
-                bi.hh06.setVisibility(View.GONE);
-                bi.hh06.setText(null);
             }
         });
 
