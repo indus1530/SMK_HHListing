@@ -255,7 +255,7 @@
 
                     <LinearLayout style="@style/linearlayout_view_wt_bound">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/hh17"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

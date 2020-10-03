@@ -212,19 +212,10 @@
 
                         </androidx.cardview.widget.CardView>
 
-                        <TextView
-                            android:id="@+id/hh07"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            android:text="@string/hh07"
-                            android:typeface="serif"
-                            android:visibility="gone" />
-
                         <Button
                             android:id="@+id/btnAddHH"
                             style="@style/button"
-                            android:onClick="@{() -> callback.onBtnAddHHClick()}"
+                            android:onClick="@{callback::onBtnAddHHClick}"
                             android:text="@string/add_household"
                             android:visibility="visible" />
 
@@ -237,7 +228,7 @@
             <Button
                 android:id="@+id/btnNextStructure"
                 style="@style/button"
-                android:onClick="@{() -> callback.onBtnNextStructureClick()}"
+                android:onClick="@{callback::onBtnNextStructureClick}"
                 android:text="@string/goto_next_structure"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -245,7 +236,7 @@
             <Button
                 android:id="@+id/btnChangePSU"
                 style="@style/button"
-                android:onClick="@{() -> callback.onBtnChangePSUClick()}"
+                android:onClick="@{callback::onBtnChangePSUClick}"
                 android:text="@string/change_enumeration_block"
                 android:visibility="gone"
                 tools:visibility="visible" />

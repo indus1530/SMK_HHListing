@@ -108,10 +108,11 @@ public class FamilyListingActivity extends AppCompatActivity {
         if (updcount > 0) {
             lc.setUID((lc.getDeviceID() + lc.getID()));
             db.updateListingUID();
+            return true;
         } else {
             Toast.makeText(this, "Sorry. You can't go further.\n Please contact IT Team (Failed to update DB)", Toast.LENGTH_SHORT).show();
+            return false;
         }
-        return true;
     }
 
 
