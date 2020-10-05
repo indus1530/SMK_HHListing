@@ -97,7 +97,16 @@ public class FamilyListingActivity extends AppCompatActivity {
 
 
     private boolean formValidation() {
-        return Validator.emptyCheckingContainer(this, bi.fldGrpSecB01);
+        if (!Validator.emptyCheckingContainer(this, bi.fldGrpSecB01)) return false;
+        if (bi.deleteHH.isChecked()) return true;
+
+        int hh11 = bi.hh11.getText().toString().isEmpty() ? 0 : Integer.parseInt(bi.hh11.getText().toString());
+        int hh12 = bi.hh13.getText().toString().isEmpty() ? 0 : Integer.parseInt(bi.hh13.getText().toString());
+
+        if ((hh11 + hh12) > Integer.parseInt(bi.hh16.getText().toString()))
+            return Validator.emptyCustomTextBox(this, bi.hh16, "Total not matching!!");
+
+        return true;
     }
 
 
@@ -116,14 +125,10 @@ public class FamilyListingActivity extends AppCompatActivity {
     }
 
 
-    public void onTextChangedHH11(CharSequence s, int start, int before, int count) {
-        if (Objects.requireNonNull(bi.hh11.getText()).toString().trim().isEmpty()) return;
-        bi.hh13.setMaxvalue(Float.parseFloat(bi.hh11.getText().toString()));
-    }
-
     public void onTextChangedHH16(CharSequence s, int start, int before, int count) {
         if (Objects.requireNonNull(bi.hh16.getText()).toString().trim().isEmpty()) return;
-        bi.hh11.setMaxvalue(Float.parseFloat(bi.hh16.getText().toString()) - 1);
+        bi.hh11.setMaxvalue(Float.parseFloat(bi.hh16.getText().toString()));
+        bi.hh13.setMaxvalue(Float.parseFloat(bi.hh16.getText().toString()));
     }
 
 

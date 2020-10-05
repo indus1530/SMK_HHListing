@@ -309,6 +309,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
         );
     }
 
+
     //Reactive Streams
     private Observable<EnumBlockContract> getEnumBlockForCluster(String clusterNo) {
         return Observable.create(emitter -> {
@@ -316,6 +317,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
             emitter.onComplete();
         });
     }
+
 
     //Getting data from db
     public void gettingEnumClusterData(String clusterNo) {
@@ -362,6 +364,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
                     }
                 });
     }
+
 
     //Async tasks
     public static class CopyTask extends AsyncTask<Void, Void, Void> {

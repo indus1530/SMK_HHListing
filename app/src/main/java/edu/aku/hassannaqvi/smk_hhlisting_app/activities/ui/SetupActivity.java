@@ -28,6 +28,7 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.ListingContract;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
 import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.ActivitySetupBinding;
+import edu.aku.hassannaqvi.smk_hhlisting_app.other.models.Members;
 
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.lc;
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.userEmail;
@@ -108,7 +109,7 @@ public class SetupActivity extends AppCompatActivity {
         lc.setAppVer(MainApp.appInfo.getAppVersion());
         lc.setHhDT(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date().getTime()));
         lc.setEnumCode(MainApp.enumCode);
-        lc.setClusterCode(MainApp.clusterCode);
+        lc.setClusterCode(Members.txtClusterCode.get());
         lc.setEnumStr(MainApp.enumStr);
         lc.setHh01(String.valueOf(MainApp.hh01txt));
         lc.setHh02(MainApp.hh02txt);

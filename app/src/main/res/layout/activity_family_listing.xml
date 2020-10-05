@@ -143,7 +143,7 @@
                             style="@style/EditTextNum"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:hint="@string/num"
+                            android:hint="@string/hh16"
                             android:maxLength="2"
                             android:onTextChanged="@{callback.onTextChangedHH16}"
                             app:maxValue="99"
@@ -190,7 +190,6 @@
                             style="@style/EditTextNum"
                             android:hint="@string/hh10a"
                             android:maxLength="2"
-                            android:onTextChanged="@{callback.onTextChangedHH11}"
                             android:text='@{hh10a.checked ? hh11.getText().toString() : ""}'
                             android:visibility="@{hh10a.checked ? View.VISIBLE : View.GONE}"
                             app:maxValue="0"
@@ -204,8 +203,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/hh12cv"
-                    style="@style/cardView"
-                    android:visibility="@{hh10a.checked ? View.VISIBLE : View.GONE}">
+                    style="@style/cardView">
 
                     <LinearLayout style="@style/vlinearlayout">
 

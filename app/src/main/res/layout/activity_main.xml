@@ -268,7 +268,8 @@
 
                 <androidx.cardview.widget.CardView
                     style="@style/cardView"
-                    android:layoutDirection="rtl">
+                    android:layoutDirection="rtl"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/fldGrpMain01"
