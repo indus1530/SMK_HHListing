@@ -68,10 +68,9 @@ public class DistrictContract {
 
     public static abstract class DistrictTable implements BaseColumns {
 
-        public static final String TABLE_NAME = "district";
+        public static final String TABLE_NAME = "districts";
         public static final String COLUMN_DIST_ID = "dist_id";
         public static final String COLUMN_DIST_NAME = "district";
         public static final String COLUMN_PROVINCE_NAME = "province";
-        public static final String _URI = "districts.php";
     }
 }

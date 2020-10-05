@@ -83,7 +83,7 @@ public class SyncDevice extends AsyncTask<Void, Integer, String> {
                 try {
                     jsonObject.addProperty("dist_id", MainApp.DIST_ID);
                     jsonObject.addProperty("imei", MainApp.IMEI);
-                    jsonObject.addProperty("appversion", MainApp.versionName + "." + MainApp.versionCode);
+                    jsonObject.addProperty("appversion", MainApp.appInfo.getAppVersion());
                     jsonObject.addProperty("appname", context.getString(R.string.app_name));
 
                 } catch (Exception e) {

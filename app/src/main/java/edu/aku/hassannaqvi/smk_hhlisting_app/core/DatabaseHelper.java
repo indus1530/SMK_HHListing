@@ -953,11 +953,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 whereArgs);
     }
 
-    public void updateSyncedBLRandom(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-    }
-
     public EnumBlockContract getEnumBlock(String cluster) {
 
         SQLiteDatabase db = this.getReadableDatabase();

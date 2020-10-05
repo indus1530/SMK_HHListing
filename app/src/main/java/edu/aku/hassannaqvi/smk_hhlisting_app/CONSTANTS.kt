@@ -15,6 +15,10 @@ class CONSTANTS {
 
         const val SYNC_LOGIN = "sync_login"
 
+        //Main Activity
+        const val REQUEST_APP_UPDATE = 1
+        const val REQUEST_PSU_EXIST = 2
+
         //Login Result Code
         const val LOGIN_RESULT_CODE = 10101
         const val LOGIN_SPLASH_FLAG = "splash_flag"

@@ -63,6 +63,7 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.CONSTANTS;
 import edu.aku.hassannaqvi.smk_hhlisting_app.R;
 import edu.aku.hassannaqvi.smk_hhlisting_app.activities.sync.SyncActivity;
 import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.DistrictContract;
+import edu.aku.hassannaqvi.smk_hhlisting_app.core.AppInfo;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
 import kotlin.Pair;
@@ -146,24 +147,24 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        MainApp.appInfo = new AppInfo(this);
 
         try {
-
             String packageName = this.getPackageName();
-
             long installedOn = this
                     .getPackageManager()
                     .getPackageInfo(packageName, 0)
                     .lastUpdateTime;
-            MainApp.versionCode = this
+            MainApp.appInfo.setVersionCode(this
                     .getPackageManager()
                     .getPackageInfo(packageName, 0)
-                    .versionCode;
-            MainApp.versionName = this
+                    .versionCode);
+            MainApp.appInfo.setVersionName(this
                     .getPackageManager()
                     .getPackageInfo(packageName, 0)
-                    .versionName;
-            txtinstalldate.setText("Ver. " + MainApp.versionName + "." + MainApp.versionCode + " \r\n( Last Updated: " + new SimpleDateFormat("dd MMM. yyyy").format(new Date(installedOn)) + " )");
+                    .versionName);
+            txtinstalldate.setText(
+                    String.format("Ver. %s \r\n( Last Updated: %s )", MainApp.appInfo.getAppVersion(), new SimpleDateFormat("dd MMM. yyyy", Locale.getDefault()).format(new Date(installedOn))));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -199,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
 
 //        Testing visibility
-        if (Integer.parseInt(MainApp.versionName.split("\\.")[0]) > 0) {
+        if (Integer.parseInt(MainApp.appInfo.getVersionName().split("\\.")[0]) > 0) {
             testing.setVisibility(View.GONE);
         } else {
             testing.setVisibility(View.VISIBLE);

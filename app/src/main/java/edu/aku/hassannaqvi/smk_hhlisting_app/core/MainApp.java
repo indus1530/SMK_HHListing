@@ -36,7 +36,9 @@ public class MainApp extends Application {
     private static final long MINIMUM_TIME_BETWEEN_UPDATES = 1000; // in Milliseconds
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public static String _UPDATE_URL = MainApp._IP + "/smk_bl/app/listings/";
+    public static final String _SERVER_GET_URL = "getData.php";
     public static String DeviceURL = "devices.php";
+    public static AppInfo appInfo;
 
     public static Boolean admin = false;
     public static String IMEI;
@@ -57,8 +59,6 @@ public class MainApp extends Application {
     public static int cTotal = 0;
     public static SharedPreferences sharedPref;
     public static String userEmail = "0000";
-    public static int versionCode;
-    public static String versionName;
     protected static LocationManager locationManager;
     Location location;
 

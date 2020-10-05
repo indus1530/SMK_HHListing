@@ -1,13 +1,21 @@
 package edu.aku.hassannaqvi.smk_hhlisting_app.repository
 
 import android.Manifest
+import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Environment
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import edu.aku.hassannaqvi.smk_hhlisting_app.R
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper
+import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.ItemDialogBinding
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -83,4 +91,45 @@ fun getPermissionsList(context: Context): List<String> {
         }
     }
     return listPermissionsNeeded
+}
+
+
+@JvmOverloads
+fun openWarningActivity(
+        activity: Activity,
+        id: Int,
+        title: String = "WARNING!",
+        message: String = "Are you sure, you want to exit without saving?",
+        btnYesTxt: String = "YES",
+        btnNoTxt: String = "NO") {
+    val dialog = Dialog(activity)
+    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    val bi: ItemDialogBinding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.item_dialog, null, false)
+    dialog.setContentView(bi.root)
+    bi.alertTitle.text = title
+    bi.alertTitle.setTextColor(ContextCompat.getColor(activity, R.color.red))
+    bi.content.text = message
+    bi.btnOk.text = btnYesTxt
+    bi.btnOk.setBackgroundColor(ContextCompat.getColor(activity, R.color.green))
+    bi.btnNo.text = btnNoTxt
+    bi.btnNo.setBackgroundColor(ContextCompat.getColor(activity, R.color.gray))
+    dialog.setCancelable(false)
+    val params = WindowManager.LayoutParams()
+    params.copyFrom(dialog.window!!.attributes)
+    params.width = WindowManager.LayoutParams.WRAP_CONTENT
+    params.height = WindowManager.LayoutParams.WRAP_CONTENT
+    dialog.window!!.attributes = params
+    dialog.show()
+    bi.btnOk.setOnClickListener {
+        dialog.dismiss()
+        val warningActivity = activity as WarningActivityInterface
+        warningActivity.callWarningActivity(id)
+    }
+    bi.btnNo.setOnClickListener {
+        dialog.dismiss()
+    }
+}
+
+interface WarningActivityInterface {
+    fun callWarningActivity(id: Int)
 }

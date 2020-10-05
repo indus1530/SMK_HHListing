@@ -28,7 +28,6 @@ import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.ListingContract;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.DatabaseHelper;
 import edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp;
 import edu.aku.hassannaqvi.smk_hhlisting_app.databinding.ActivitySetupBinding;
-import edu.aku.hassannaqvi.smk_hhlisting_app.other.models.Members;
 
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.lc;
 import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.userEmail;
@@ -51,8 +50,7 @@ public class SetupActivity extends AppCompatActivity {
         } else {
             MainApp.hh03txt++;
         }
-        Members.txtStructureNo.set(String.format(Locale.getDefault(), "%04d", MainApp.hh03txt));
-
+        bi.hh03.setText(String.format(Locale.getDefault(), "%04d", MainApp.hh03txt));
         bi.hh04.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == bi.hh04h.getId() || checkedId == bi.hh04i.getId()) {
                 Clear.clearAllFields(bi.fldGrpHH12);
@@ -107,7 +105,7 @@ public class SetupActivity extends AppCompatActivity {
         lc = new ListingContract();
         SharedPreferences sharedPref = getSharedPreferences("tagName", MODE_PRIVATE);
         lc.setTagId(sharedPref.getString("tagName", null));
-        lc.setAppVer(MainApp.versionName + "." + MainApp.versionCode);
+        lc.setAppVer(MainApp.appInfo.getAppVersion());
         lc.setHhDT(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date().getTime()));
         lc.setEnumCode(MainApp.enumCode);
         lc.setClusterCode(MainApp.clusterCode);

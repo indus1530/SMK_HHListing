@@ -110,12 +110,14 @@ public class GetAllData extends AsyncTask<String, String, String> {
     protected String doInBackground(String... args) {
 
         StringBuilder result = new StringBuilder();
+        String tableName = "";
 
         URL url = null;
         try {
             switch (syncClass) {
                 case "User":
-                    url = new URL(MainApp._HOST_URL + UsersContract.UsersTable._URI);
+                    url = new URL(MainApp._HOST_URL + MainApp._SERVER_GET_URL);
+                    tableName = UsersContract.UsersTable.TABLE_NAME;
                     position = 0;
                     break;
                 case "VersionApp":
@@ -123,11 +125,13 @@ public class GetAllData extends AsyncTask<String, String, String> {
                     position = 1;
                     break;
                 case "District":
-                    url = new URL(MainApp._HOST_URL + DistrictContract.DistrictTable._URI);
+                    url = new URL(MainApp._HOST_URL + MainApp._SERVER_GET_URL);
+                    tableName = DistrictContract.DistrictTable.TABLE_NAME;
                     position = 2;
                     break;
                 case "EnumBlock":
-                    url = new URL(MainApp._HOST_URL + EnumBlockContract.EnumBlockTable._URI);
+                    url = new URL(MainApp._HOST_URL + MainApp._SERVER_GET_URL);
+                    tableName = EnumBlockContract.EnumBlockTable.TABLE_NAME;
                     position = 0;
                     break;
             }
@@ -151,7 +155,7 @@ public class GetAllData extends AsyncTask<String, String, String> {
                     DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
                     JSONObject json = new JSONObject();
                     try {
-                        json.put("user", "test1234");
+                        json.put("table", tableName);
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
@@ -175,7 +179,7 @@ public class GetAllData extends AsyncTask<String, String, String> {
                     DataOutputStream wr2 = new DataOutputStream(urlConnection.getOutputStream());
                     JSONObject json2 = new JSONObject();
                     try {
-                        json2.put("user", "test1234");
+                        json2.put("table", tableName);
                         json2.put("dist_id", MainApp.DIST_ID);
                     } catch (JSONException e1) {
                         e1.printStackTrace();

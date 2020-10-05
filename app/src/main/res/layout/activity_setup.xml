@@ -72,7 +72,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:gravity="center"
-                            android:text="@{member.txtStructureNo}"
                             android:textColor="@color/colorAccent"
                             android:textSize="@dimen/_22sdp"
                             android:textStyle="bold" />

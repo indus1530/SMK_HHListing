@@ -13,7 +13,7 @@
 
         <variable
             name="member"
-            type="edu.aku.hassannaqvi.smk_hhlisting_app.models.Members" />
+            type="edu.aku.hassannaqvi.smk_hhlisting_app.other.models.Members" />
     </data>
 
 

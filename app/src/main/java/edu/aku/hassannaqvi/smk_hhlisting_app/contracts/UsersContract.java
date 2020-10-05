@@ -32,7 +32,7 @@ public class UsersContract {
     }
 
     public void setId(int id) {
-        this._ID = Long.valueOf(id);
+        this._ID = (long) id;
     }
 
     public String getUserName() {
@@ -94,7 +94,5 @@ public class UsersContract {
         public static final String ROW_USERNAME = "username";
         public static final String ROW_PASSWORD = "password";
         public static final String DIST_ID = "dist_id";
-
-        public static final String _URI = "users.php";
     }
 }
