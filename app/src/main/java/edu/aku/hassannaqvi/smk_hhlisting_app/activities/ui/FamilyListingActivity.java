@@ -24,7 +24,7 @@ import static edu.aku.hassannaqvi.smk_hhlisting_app.core.MainApp.lc;
 
 public class FamilyListingActivity extends AppCompatActivity {
 
-    private static final String TAG = "FamilyListingActivity";
+    private static final String TAG = FamilyListingActivity.class.getName();
     private static Boolean familyFlag = false;
     ActivityFamilyListingBinding bi;
 
@@ -33,7 +33,6 @@ public class FamilyListingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         bi = DataBindingUtil.setContentView(this, R.layout.activity_family_listing);
         bi.setCallback(this);
-        this.setTitle("Family Information");
         Members.txtTeamNoWithFam.set("S" + String.format(Locale.getDefault(), "%04d", MainApp.hh03txt) + "-" + String.format(Locale.getDefault(), "%03d", Integer.valueOf(MainApp.hh07txt)));
 
         setupButtons();
@@ -83,7 +82,6 @@ public class FamilyListingActivity extends AppCompatActivity {
 
     private void saveDraft() {
         lc.setHh07(MainApp.hh07txt);
-//        MainApp.lc.setHh08a1("1");
         lc.setHh08(bi.hh08.getText().toString());
         lc.setHh09(bi.hh09.getText().toString());
         lc.setHh10(bi.hh10a.isChecked() ? "1" : bi.hh10b.isChecked() ? "2" : "0");
@@ -111,7 +109,7 @@ public class FamilyListingActivity extends AppCompatActivity {
 
 
     private boolean updateDB() {
-        DatabaseHelper db = new DatabaseHelper(this);
+        DatabaseHelper db = MainApp.appInfo.getDbHelper();
         long updcount = db.addForm(lc);
         lc.setID(String.valueOf(updcount));
         if (updcount > 0) {

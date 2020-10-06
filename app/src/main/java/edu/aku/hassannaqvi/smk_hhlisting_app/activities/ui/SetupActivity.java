@@ -108,6 +108,7 @@ public class SetupActivity extends AppCompatActivity {
         lc.setTagId(sharedPref.getString("tagName", null));
         lc.setAppVer(MainApp.appInfo.getAppVersion());
         lc.setHhDT(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date().getTime()));
+        lc.setHhDT01(bi.formdate.getText().toString());
         lc.setEnumCode(MainApp.enumCode);
         lc.setClusterCode(Members.txtClusterCode.get());
         lc.setEnumStr(MainApp.enumStr);
@@ -129,7 +130,7 @@ public class SetupActivity extends AppCompatActivity {
         lc.setHh05(bi.hh05.isChecked() ? "1" : "2");
         lc.setHh06(Objects.requireNonNull(bi.hh06.getText()).toString());
         lc.setHh07(MainApp.hh07txt);
-        lc.setDeviceID(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+        lc.setDeviceID(Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
         lc.setHh08a1(bi.hh14a.isChecked() ? "1" : bi.hh14b.isChecked() ? "2" : "0");
         setGPS();
         MainApp.fTotal = bi.hh06.getText().toString().isEmpty() ? 0 : Integer.parseInt(bi.hh06.getText().toString());
@@ -143,12 +144,14 @@ public class SetupActivity extends AppCompatActivity {
             String lang = GPSPref.getString("Longitude", "0");
             String acc = GPSPref.getString("Accuracy", "0");
             String dt = GPSPref.getString("Time", "0");
+            assert lat != null;
+            assert lang != null;
             if (lat.equals("0") && lang.equals("0")) {
                 Toast.makeText(this, "Could not obtained GPS points", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "GPS set", Toast.LENGTH_SHORT).show();
             }
-            String date = DateFormat.format("dd-MM-yyyy HH:mm", Long.parseLong(GPSPref.getString("Time", "0"))).toString();
+            String date = DateFormat.format("dd-MM-yyyy HH:mm", Long.parseLong(Objects.requireNonNull(GPSPref.getString("Time", "0")))).toString();
             lc.setGPSLat(GPSPref.getString("Latitude", "0"));
             lc.setGPSLng(GPSPref.getString("Longitude", "0"));
             lc.setGPSAcc(GPSPref.getString("Accuracy", "0"));
@@ -168,7 +171,7 @@ public class SetupActivity extends AppCompatActivity {
 
 
     private boolean updateDB() {
-        DatabaseHelper db = new DatabaseHelper(this);
+        DatabaseHelper db = MainApp.appInfo.getDbHelper();
         long updcount = db.addForm(lc);
         lc.setID(String.valueOf(updcount));
         if (updcount > 0) {

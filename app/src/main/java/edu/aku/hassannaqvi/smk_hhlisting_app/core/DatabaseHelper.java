@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String TAG = DatabaseHelper.class.getName();
     public static final String DATABASE_NAME = "SMK-hhl.db";
-    public static final String PROJECT_NAME = "SMK-hhl-2020";
+    public static final String PROJECT_NAME = "DMU-SMK/LISTING";
     public static final String DB_NAME = DATABASE_NAME.replace(".db", "-copy.db");
     private static final int DATABASE_VERSION = 1;
     final String SQL_CREATE_BL_RANDOM = "CREATE TABLE " + singleRandomHH.TABLE_NAME + "("
@@ -189,6 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ListingEntry.COLUMN_NAME_UID, lc.getUID());
         values.put(ListingEntry.COLUMN_NAME_HHDATETIME, lc.getHhDT());
+        values.put(ListingEntry.COLUMN_NAME_HHDATETIME01, lc.getHhDT01());
 
         values.put(ListingEntry.COLUMN_NAME_ENUMCODE, lc.getEnumCode());
         values.put(ListingEntry.COLUMN_NAME_CLUSTERCODE, lc.getClusterCode());

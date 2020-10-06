@@ -209,6 +209,11 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onSettingVisibilityContent(View.GONE);
+    }
 
     //Screen Buttons
     public void CheckClusterBtn(View v) {
@@ -219,6 +224,11 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
         }
 
         if (!Validator.emptyCheckingContainer(this, bi.txtPSU)) return;
+
+        if (bi.txtPSU.getText().toString().length() != 6) {
+            Toast.makeText(this, "Invalid cluster length", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         boolean loginFlag;
         String subCluster = bi.txtPSU.getText().toString();
@@ -231,7 +241,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
         if (loginFlag) {
             gettingEnumClusterData(bi.txtPSU.getText().toString());
         } else {
-            Toast.makeText(this, "Can't proceed test cluster for current user!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Can't proceed test cluster for current user", Toast.LENGTH_SHORT).show();
             onSettingVisibilityContent(View.GONE);
         }
 
@@ -273,7 +283,6 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
     private void setUIContent() {
         bi.chkconfirm.setOnCheckedChangeListener((compoundButton, b) -> {
             if (bi.chkconfirm.isChecked()) {
-                bi.openForm.setBackgroundColor(getResources().getColor(R.color.green));
                 bi.lllstwarning.setVisibility(View.VISIBLE);
                 MainApp.hh01txt = 1;
             } else {

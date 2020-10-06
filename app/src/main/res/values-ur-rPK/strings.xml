@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SMK Linelisting</string>
+    <string name="app_name">SMK-Listing</string>
     <string name="hh02"> کلسٹر کوڈ  </string>
     <string name="hh03"> اسٹرکچر نمبر </string>
     <string name="hh04"> تعمیراتی ساخت </string>
@@ -84,5 +84,6 @@
     <string name="a_project_of">A PROJECT OF</string>
     <string name="aga_khan_logo">Aga Khan LOGO</string>
     <string name="only_for_testing">ONLY FOR TESTING</string>
+    <string name="formdate">فارم کی تاریخ</string>
 
 </resources>

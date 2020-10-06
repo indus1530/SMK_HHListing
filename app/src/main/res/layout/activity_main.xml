@@ -23,7 +23,7 @@
                 android:id="@+id/testing"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorRedsub"
+                android:background="@color/red"
                 android:elevation="6dp"
                 android:gravity="center"
                 android:keepScreenOn="true"
@@ -52,7 +52,7 @@
                 android:background="@color/black"
                 android:gravity="center_horizontal"
                 android:text="@string/records_summary"
-                android:textColor="@color/green"
+                android:textColor="@color/colorPrimary"
                 android:textSize="24sp" />
 
             <TextView
@@ -264,7 +264,8 @@
                 android:id="@+id/lllstwarning"
                 style="@style/vlinearlayout"
                 android:layout_marginTop="15dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <androidx.cardview.widget.CardView
                     style="@style/cardView"
