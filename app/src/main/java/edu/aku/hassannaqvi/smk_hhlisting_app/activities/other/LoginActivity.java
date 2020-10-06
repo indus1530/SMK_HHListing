@@ -442,32 +442,15 @@ public class LoginActivity extends AppCompatActivity {
         AnimatedVectorDrawable drawable;
 
         if (mPasswordView.getTransformationMethod() == null) {
-
-            drawable = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_anim_close);
-            showPassword.setImageDrawable(drawable);
-            drawable.start();
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mPasswordView.setTransformationMethod(new PasswordTransformationMethod());
-                }
-            }, 1000);
-
-
+            /*drawable = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_anim_close);
+            mPasswordView.setBackgroundDrawable(drawable);
+            drawable.start();*/
+            new Handler().postDelayed(() -> mPasswordView.setTransformationMethod(new PasswordTransformationMethod()), 500);
         } else {
-
-            drawable = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_anim);
-            showPassword.setImageDrawable(drawable);
-            drawable.start();
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mPasswordView.setTransformationMethod(null);
-                }
-            }, 1000);
-
+            /*drawable = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_anim);
+            mPasswordView.setBackgroundDrawable(drawable);
+            drawable.start();*/
+            new Handler().postDelayed(() -> mPasswordView.setTransformationMethod(null), 500);
         }
     }
 
@@ -480,7 +463,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "TEAM CREDITS: " +
                             "\r\nHassan Naqvi, " +
                             "Ali Azaz, " +
-                            "Abdul Sajid, " +
+                            "Hussain, " +
                             "Farooqui",
                     Toast.LENGTH_LONG)
                     .show();
