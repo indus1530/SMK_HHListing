@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.BLRandomContract.singleRandomHH;
 import edu.aku.hassannaqvi.smk_hhlisting_app.contracts.DistrictContract;
@@ -149,19 +150,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);*/
     }
 
-    public int getListingCount() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQL_COUNT_LISTINGS, null);
-        int count = 0;
 
-        while (cursor.moveToNext()) {
-            count = cursor.getInt(0);
-        }
-
-        cursor.close();
-        return count;
-    }
-
+    //Other Functions
     public boolean Login(String username, String password) throws SQLException {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -180,6 +170,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+
+    //Add Forms
     public Long addForm(ListingContract lc) {
 
         // Gets the data repository in write mode
@@ -267,6 +259,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
+    //Update forms in DB
     public void updateListingUID() {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -303,89 +297,206 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 whereArgs);
     }
 
-    public JSONArray getAllListingsJSON() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = null;
-        String[] columns = {
-                ListingEntry._ID,
-                ListingEntry.COLUMN_NAME_UID,
-                ListingEntry.COLUMN_NAME_HHDATETIME,
-                ListingEntry.COLUMN_NAME_ENUMCODE,
-                ListingEntry.COLUMN_NAME_CLUSTERCODE,
-                ListingEntry.COLUMN_NAME_ENUMSTR,
-                ListingEntry.COLUMN_NAME_HH01,
-                ListingEntry.COLUMN_NAME_HH02,
-                ListingEntry.COLUMN_NAME_HH03,
-                ListingEntry.COLUMN_NAME_HH04,
-                ListingEntry.COLUMN_NAME_HH04OTHER,
-                ListingEntry.COLUMN_NAME_HH05,
-                ListingEntry.COLUMN_NAME_HH06,
-                ListingEntry.COLUMN_NAME_HH07,
-                ListingEntry.COLUMN_NAME_HH07n,
-                ListingEntry.COLUMN_NAME_HH08,
-                ListingEntry.COLUMN_NAME_HH09,
-                ListingEntry.COLUMN_NAME_HH08A1,
-                ListingEntry.COLUMN_NAME_HH09A1,
-                ListingEntry.COLUMN_NAME_HH10,
-                ListingEntry.COLUMN_NAME_HH11,
-                ListingEntry.COLUMN_NAME_HH12,
-                ListingEntry.COLUMN_NAME_HH13,
-                ListingEntry.COLUMN_NAME_HH14,
-                ListingEntry.COLUMN_NAME_HH15,
-                ListingEntry.COLUMN_NAME_HH16,
-                ListingEntry.COLUMN_ADDRESS,
-                ListingEntry.COLUMN_ISNEWHH,
-                ListingEntry.COLUMN_COUNTER,
-                ListingEntry.COLUMN_USERNAME,
-                ListingEntry.COLUMN_NAME_DEVICEID,
-                ListingEntry.COLUMN_TAGID,
-                ListingEntry.COLUMN_NAME_GPSLat,
-                ListingEntry.COLUMN_NAME_GPSLng,
-                ListingEntry.COLUMN_NAME_GPSTime,
-                ListingEntry.COLUMN_NAME_GPSAccuracy,
-                ListingEntry.COLUMN_NAME_GPSAltitude,
-                ListingEntry.COLUMN_APPVER,
-                ListingEntry.COLUMN_RANDOMIZED
-        };
 
-        String whereClause = null;
-        String[] whereArgs = null;
-        String groupBy = null;
-        String having = null;
-
-        String orderBy =
-                ListingEntry.COLUMN_NAME_CLUSTERCODE + " ASC";
-
-        Collection<ListingContract> allLC = new ArrayList<>();
-        JSONArray jsonArray = new JSONArray();
+    //Sync functions
+    public void syncListingFromDevice(JSONArray fmlist) {
+        SQLiteDatabase db = this.getWritableDatabase();
         try {
-            c = db.query(
-                    ListingEntry.TABLE_NAME,  // The table to query
-                    columns,                   // The columns to return
-                    whereClause,               // The columns for the WHERE clause
-                    whereArgs,                 // The values for the WHERE clause
-                    groupBy,                   // don't group the rows
-                    having,                    // don't filter by row groups
-                    orderBy                    // The sort order
-            );
-            while (c.moveToNext()) {
-                ListingContract listing = new ListingContract();
-                allLC.add(listing.hydrate(c, 0));
+            JSONArray jsonArray = fmlist;
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject jsonObjectUser = jsonArray.getJSONObject(i);
+
+                ListingContract fmc = new ListingContract();
+                fmc.Sync(jsonObjectUser);
+
+                addForm(fmc);
             }
-            for (ListingContract fc : allLC) {
-                jsonArray.put(fc.toJSONObject());
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+
+        } catch (Exception e) {
+            Log.d(TAG, "syncListing(e): " + e);
         } finally {
-            if (c != null) {
-                c.close();
-            }
-            if (db != null) {
-                db.close();
-            }
+            db.close();
         }
-        return jsonArray;
+    }
+
+    public int syncUser(JSONArray userList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(UsersContract.UsersTable.TABLE_NAME, null, null);
+        int insertCount = 0;
+        try {
+            for (int i = 0; i < userList.length(); i++) {
+
+                JSONObject jsonObjectUser = userList.getJSONObject(i);
+
+                UsersContract user = new UsersContract();
+                user.Sync(jsonObjectUser);
+                ContentValues values = new ContentValues();
+
+                values.put(UsersContract.UsersTable.ROW_USERNAME, user.getUserName());
+                values.put(UsersContract.UsersTable.ROW_PASSWORD, user.getPassword());
+                values.put(UsersContract.UsersTable.DIST_ID, user.getDIST_ID());
+                long rowID = db.insert(UsersContract.UsersTable.TABLE_NAME, null, values);
+                if (rowID != -1) insertCount++;
+            }
+
+        } catch (Exception e) {
+            Log.d(TAG, "syncUser(e): " + e);
+            db.close();
+        } finally {
+            db.close();
+        }
+        return insertCount;
+    }
+
+    public int syncDistrict(JSONArray distList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DistrictContract.DistrictTable.TABLE_NAME, null, null);
+        int insertCount = 0;
+        try {
+            for (int i = 0; i < distList.length(); i++) {
+
+                JSONObject jsonObjectUser = distList.getJSONObject(i);
+
+                DistrictContract dist = new DistrictContract();
+                dist.Sync(jsonObjectUser);
+                ContentValues values = new ContentValues();
+
+                values.put(DistrictTable.COLUMN_DIST_ID, dist.getDist_id());
+                values.put(DistrictTable.COLUMN_DIST_NAME, dist.getDistrict());
+                values.put(DistrictTable.COLUMN_PROVINCE_NAME, dist.getProvince());
+                long rowID = db.insert(DistrictTable.TABLE_NAME, null, values);
+                if (rowID != -1) insertCount++;
+            }
+
+        } catch (Exception e) {
+            Log.d(TAG, "syncDist(e): " + e);
+            db.close();
+        } finally {
+            db.close();
+        }
+        return insertCount;
+    }
+
+    public int syncEnumBlocks(JSONArray enumList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(EnumBlockContract.EnumBlockTable.TABLE_NAME, null, null);
+        int insertCount = 0;
+        try {
+            for (int i = 0; i < enumList.length(); i++) {
+                JSONObject jsonObjectCC;
+                try {
+                    jsonObjectCC = enumList.getJSONObject(i);
+                    EnumBlockContract Vc = new EnumBlockContract();
+                    Vc.Sync(jsonObjectCC);
+
+                    ContentValues values = new ContentValues();
+
+                    values.put(EnumBlockContract.EnumBlockTable.COLUMN_DIST_ID, Vc.getDist_id());
+                    values.put(EnumBlockContract.EnumBlockTable.COLUMN_GEO_AREA, Vc.getGeoarea());
+                    values.put(EnumBlockContract.EnumBlockTable.COLUMN_CLUSTER_AREA, Vc.getCluster());
+
+                    long rowID = db.insert(EnumBlockContract.EnumBlockTable.TABLE_NAME, null, values);
+                    if (rowID != -1) insertCount++;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (Exception e) {
+            Log.d(TAG, "syncEnumBlocks(e): " + e);
+            db.close();
+        } finally {
+            db.close();
+        }
+        return insertCount;
+    }
+
+    public void syncVertices(JSONArray vcList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(VerticesTable.TABLE_NAME, null, null);
+        try {
+            for (int i = 0; i < vcList.length(); i++) {
+                JSONObject jsonObjectVR = vcList.getJSONObject(i);
+
+                VerticesContract vc = new VerticesContract();
+                vc.sync(jsonObjectVR);
+
+                ContentValues values = new ContentValues();
+
+                values.put(VerticesTable.COLUMN_CLUSTER_CODE, vc.getCluster_code());
+                values.put(VerticesTable.COLUMN_POLY_LAT, vc.getPoly_lat());
+                values.put(VerticesTable.COLUMN_POLY_LANG, vc.getPoly_lng());
+                values.put(VerticesTable.COLUMN_POLY_SEQ, vc.getPoly_seq());
+
+                db.insert(VerticesTable.TABLE_NAME, null, values);
+            }
+        } catch (Exception e) {
+            db.close();
+        }
+    }
+
+    public int syncVersionApp(JSONObject versionList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(VersionAppContract.VersionAppTable.TABLE_NAME, null, null);
+        long count = 0;
+        try {
+            JSONObject jsonObjectCC = ((JSONArray) versionList.get(VersionAppContract.VersionAppTable.COLUMN_VERSION_PATH)).getJSONObject(0);
+            VersionAppContract Vc = new VersionAppContract();
+            Vc.Sync(jsonObjectCC);
+
+            ContentValues values = new ContentValues();
+
+            values.put(VersionAppContract.VersionAppTable.COLUMN_PATH_NAME, Vc.getPathname());
+            values.put(VersionAppContract.VersionAppTable.COLUMN_VERSION_CODE, Vc.getVersioncode());
+            values.put(VersionAppContract.VersionAppTable.COLUMN_VERSION_NAME, Vc.getVersionname());
+
+            count = db.insert(VersionAppContract.VersionAppTable.TABLE_NAME, null, values);
+            if (count > 0) count = 1;
+
+        } catch (Exception ignored) {
+        } finally {
+            db.close();
+        }
+
+        return (int) count;
+    }
+
+
+    //Update from server response
+    public void updateSyncedForms(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+// New value for one column
+        ContentValues values = new ContentValues();
+        values.put(ListingEntry.COLUMN_SYNCED, true);
+        values.put(ListingEntry.COLUMN_SYNCED_DATE, new Date().toString());
+
+// Which row to update, based on the title
+        String where = ListingEntry._ID + " = ?";
+        String[] whereArgs = {id};
+
+        int count = db.update(
+                ListingEntry.TABLE_NAME,
+                values,
+                where,
+                whereArgs);
+    }
+
+
+    //Get Functions
+    public int getListingCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL_COUNT_LISTINGS, null);
+        int count = 0;
+
+        while (cursor.moveToNext()) {
+            count = cursor.getInt(0);
+        }
+
+        cursor.close();
+        return count;
     }
 
     public Collection<ListingContract> getUnsyncedListings() {
@@ -468,26 +579,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allLC;
     }
 
-    public void syncListingFromDevice(JSONArray fmlist) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public ArrayList<Cursor> getData(String Query) {
+        //get writable database
+        SQLiteDatabase sqlDB = this.getWritableDatabase();
+        String[] columns = new String[]{"mesage"};
+        //an array list of cursor to save two cursors one has results from the query
+        //other cursor stores error message if any errors are triggered
+        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
+        MatrixCursor Cursor2 = new MatrixCursor(columns);
+        alc.add(null);
+        alc.add(null);
+
         try {
-            JSONArray jsonArray = fmlist;
-            for (int i = 0; i < jsonArray.length(); i++) {
+            //execute the query results will be save in Cursor c
+            Cursor c = sqlDB.rawQuery(Query, null);
 
-                JSONObject jsonObjectUser = jsonArray.getJSONObject(i);
+            //add value to cursor2
+            Cursor2.addRow(new Object[]{"Success"});
 
-                ListingContract fmc = new ListingContract();
-                fmc.Sync(jsonObjectUser);
+            alc.set(1, Cursor2);
+            if (null != c && c.getCount() > 0) {
 
-                addForm(fmc);
+                alc.set(0, c);
+                c.moveToFirst();
+
+                return alc;
             }
-
-
-        } catch (Exception e) {
-            Log.d(TAG, "syncListing(e): " + e);
-        } finally {
-            db.close();
+            return alc;
+        } catch (Exception sqlEx) {
+            Log.d("printing exception", Objects.requireNonNull(sqlEx.getMessage()));
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[]{"" + sqlEx.getMessage()});
+            alc.set(1, Cursor2);
+            return alc;
         }
+
+
     }
 
     public Collection<ListingContract> getAllListingsForRandom() {
@@ -664,8 +791,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return jsonArray;
     }
 
-
-    public ArrayList<ListingContract> randomLisiting(String clusterCode) {
+    public ArrayList<ListingContract> getRandomLisiting(String clusterCode) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = null;
         String[] columns = {
@@ -746,173 +872,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allLC;
     }
 
-    public ArrayList<Cursor> getData(String Query) {
-        //get writable database
-        SQLiteDatabase sqlDB = this.getWritableDatabase();
-        String[] columns = new String[]{"mesage"};
-        //an array list of cursor to save two cursors one has results from the query
-        //other cursor stores error message if any errors are triggered
-        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
-        MatrixCursor Cursor2 = new MatrixCursor(columns);
-        alc.add(null);
-        alc.add(null);
-
-
-        try {
-            String maxQuery = Query;
-            //execute the query results will be save in Cursor c
-            Cursor c = sqlDB.rawQuery(maxQuery, null);
-
-
-            //add value to cursor2
-            Cursor2.addRow(new Object[]{"Success"});
-
-            alc.set(1, Cursor2);
-            if (null != c && c.getCount() > 0) {
-
-                alc.set(0, c);
-                c.moveToFirst();
-
-                return alc;
-            }
-            return alc;
-        } catch (SQLException sqlEx) {
-            Log.d("printing exception", sqlEx.getMessage());
-            //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[]{"" + sqlEx.getMessage()});
-            alc.set(1, Cursor2);
-            return alc;
-        } catch (Exception ex) {
-
-            Log.d("printing exception", ex.getMessage());
-
-            //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[]{"" + ex.getMessage()});
-            alc.set(1, Cursor2);
-            return alc;
-        }
-
-
-    }
-
-
-    public int syncUser(JSONArray userList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(UsersContract.UsersTable.TABLE_NAME, null, null);
-        int insertCount = 0;
-        try {
-            JSONArray jsonArray = userList;
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject jsonObjectUser = jsonArray.getJSONObject(i);
-
-                UsersContract user = new UsersContract();
-                user.Sync(jsonObjectUser);
-                ContentValues values = new ContentValues();
-
-                values.put(UsersContract.UsersTable.ROW_USERNAME, user.getUserName());
-                values.put(UsersContract.UsersTable.ROW_PASSWORD, user.getPassword());
-                values.put(UsersContract.UsersTable.DIST_ID, user.getDIST_ID());
-                long rowID = db.insert(UsersContract.UsersTable.TABLE_NAME, null, values);
-                if (rowID != -1) insertCount++;
-            }
-
-        } catch (Exception e) {
-            Log.d(TAG, "syncUser(e): " + e);
-            db.close();
-        } finally {
-            db.close();
-        }
-        return insertCount;
-    }
-
-    public int syncDistrict(JSONArray distList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(DistrictContract.DistrictTable.TABLE_NAME, null, null);
-        int insertCount = 0;
-        try {
-            for (int i = 0; i < distList.length(); i++) {
-
-                JSONObject jsonObjectUser = distList.getJSONObject(i);
-
-                DistrictContract dist = new DistrictContract();
-                dist.Sync(jsonObjectUser);
-                ContentValues values = new ContentValues();
-
-                values.put(DistrictTable.COLUMN_DIST_ID, dist.getDist_id());
-                values.put(DistrictTable.COLUMN_DIST_NAME, dist.getDistrict());
-                values.put(DistrictTable.COLUMN_PROVINCE_NAME, dist.getProvince());
-                long rowID = db.insert(DistrictTable.TABLE_NAME, null, values);
-                if (rowID != -1) insertCount++;
-            }
-
-        } catch (Exception e) {
-            Log.d(TAG, "syncDist(e): " + e);
-            db.close();
-        } finally {
-            db.close();
-        }
-        return insertCount;
-    }
-
-    public int syncEnumBlocks(JSONArray enumList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(EnumBlockContract.EnumBlockTable.TABLE_NAME, null, null);
-        int insertCount = 0;
-        try {
-            for (int i = 0; i < enumList.length(); i++) {
-                JSONObject jsonObjectCC;
-                try {
-                    jsonObjectCC = enumList.getJSONObject(i);
-                    EnumBlockContract Vc = new EnumBlockContract();
-                    Vc.Sync(jsonObjectCC);
-
-                    ContentValues values = new ContentValues();
-
-                    values.put(EnumBlockContract.EnumBlockTable.COLUMN_DIST_ID, Vc.getDist_id());
-                    values.put(EnumBlockContract.EnumBlockTable.COLUMN_GEO_AREA, Vc.getGeoarea());
-                    values.put(EnumBlockContract.EnumBlockTable.COLUMN_CLUSTER_AREA, Vc.getCluster());
-
-                    long rowID = db.insert(EnumBlockContract.EnumBlockTable.TABLE_NAME, null, values);
-                    if (rowID != -1) insertCount++;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        } catch (Exception e) {
-            Log.d(TAG, "syncEnumBlocks(e): " + e);
-            db.close();
-        } finally {
-            db.close();
-        }
-        return insertCount;
-    }
-
-
-    public Collection<VerticesContract> getVerticesByCluster(String cluster_code) {
+    public JSONArray getAllListingsJSON() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = null;
         String[] columns = {
-                VerticesTable._ID,
-                VerticesTable.COLUMN_CLUSTER_CODE,
-                VerticesTable.COLUMN_POLY_LAT,
-                VerticesTable.COLUMN_POLY_LANG,
-                VerticesTable.COLUMN_POLY_SEQ
+                ListingEntry._ID,
+                ListingEntry.COLUMN_NAME_UID,
+                ListingEntry.COLUMN_NAME_HHDATETIME,
+                ListingEntry.COLUMN_NAME_ENUMCODE,
+                ListingEntry.COLUMN_NAME_CLUSTERCODE,
+                ListingEntry.COLUMN_NAME_ENUMSTR,
+                ListingEntry.COLUMN_NAME_HH01,
+                ListingEntry.COLUMN_NAME_HH02,
+                ListingEntry.COLUMN_NAME_HH03,
+                ListingEntry.COLUMN_NAME_HH04,
+                ListingEntry.COLUMN_NAME_HH04OTHER,
+                ListingEntry.COLUMN_NAME_HH05,
+                ListingEntry.COLUMN_NAME_HH06,
+                ListingEntry.COLUMN_NAME_HH07,
+                ListingEntry.COLUMN_NAME_HH07n,
+                ListingEntry.COLUMN_NAME_HH08,
+                ListingEntry.COLUMN_NAME_HH09,
+                ListingEntry.COLUMN_NAME_HH08A1,
+                ListingEntry.COLUMN_NAME_HH09A1,
+                ListingEntry.COLUMN_NAME_HH10,
+                ListingEntry.COLUMN_NAME_HH11,
+                ListingEntry.COLUMN_NAME_HH12,
+                ListingEntry.COLUMN_NAME_HH13,
+                ListingEntry.COLUMN_NAME_HH14,
+                ListingEntry.COLUMN_NAME_HH15,
+                ListingEntry.COLUMN_NAME_HH16,
+                ListingEntry.COLUMN_ADDRESS,
+                ListingEntry.COLUMN_ISNEWHH,
+                ListingEntry.COLUMN_COUNTER,
+                ListingEntry.COLUMN_USERNAME,
+                ListingEntry.COLUMN_NAME_DEVICEID,
+                ListingEntry.COLUMN_TAGID,
+                ListingEntry.COLUMN_NAME_GPSLat,
+                ListingEntry.COLUMN_NAME_GPSLng,
+                ListingEntry.COLUMN_NAME_GPSTime,
+                ListingEntry.COLUMN_NAME_GPSAccuracy,
+                ListingEntry.COLUMN_NAME_GPSAltitude,
+                ListingEntry.COLUMN_APPVER,
+                ListingEntry.COLUMN_RANDOMIZED
         };
 
-        String whereClause = VerticesTable.COLUMN_CLUSTER_CODE + " = ?";
-        String[] whereArgs = {cluster_code};
+        String whereClause = null;
+        String[] whereArgs = null;
         String groupBy = null;
         String having = null;
 
         String orderBy =
-                VerticesTable.COLUMN_POLY_SEQ + " ASC";
+                ListingEntry.COLUMN_NAME_CLUSTERCODE + " ASC";
 
-        Collection<VerticesContract> allVC = new ArrayList<>();
+        Collection<ListingContract> allLC = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray();
         try {
             c = db.query(
-                    VerticesTable.TABLE_NAME,  // The table to query
+                    ListingEntry.TABLE_NAME,  // The table to query
                     columns,                   // The columns to return
                     whereClause,               // The columns for the WHERE clause
                     whereArgs,                 // The values for the WHERE clause
@@ -921,9 +938,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     orderBy                    // The sort order
             );
             while (c.moveToNext()) {
-                VerticesContract vc = new VerticesContract();
-                allVC.add(vc.hydrate(c));
+                ListingContract listing = new ListingContract();
+                allLC.add(listing.hydrate(c, 0));
             }
+            for (ListingContract fc : allLC) {
+                jsonArray.put(fc.toJSONObject());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         } finally {
             if (c != null) {
                 c.close();
@@ -932,26 +954,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.close();
             }
         }
-        return allVC;
-    }
-
-    public void updateSyncedForms(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-// New value for one column
-        ContentValues values = new ContentValues();
-        values.put(ListingEntry.COLUMN_SYNCED, true);
-        values.put(ListingEntry.COLUMN_SYNCED_DATE, new Date().toString());
-
-// Which row to update, based on the title
-        String where = ListingEntry._ID + " = ?";
-        String[] whereArgs = {id};
-
-        int count = db.update(
-                ListingEntry.TABLE_NAME,
-                values,
-                where,
-                whereArgs);
+        return jsonArray;
     }
 
     public EnumBlockContract getEnumBlock(String cluster) {
@@ -998,59 +1001,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allEB;
     }
 
-    public void syncVertices(JSONArray vcList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(VerticesTable.TABLE_NAME, null, null);
+    public Collection<VerticesContract> getVerticesByCluster(String cluster_code) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = null;
+        String[] columns = {
+                VerticesTable._ID,
+                VerticesTable.COLUMN_CLUSTER_CODE,
+                VerticesTable.COLUMN_POLY_LAT,
+                VerticesTable.COLUMN_POLY_LANG,
+                VerticesTable.COLUMN_POLY_SEQ
+        };
 
+        String whereClause = VerticesTable.COLUMN_CLUSTER_CODE + " = ?";
+        String[] whereArgs = {cluster_code};
+        String groupBy = null;
+        String having = null;
+
+        String orderBy =
+                VerticesTable.COLUMN_POLY_SEQ + " ASC";
+
+        Collection<VerticesContract> allVC = new ArrayList<>();
         try {
-            JSONArray jsonArray = vcList;
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObjectVR = jsonArray.getJSONObject(i);
-
+            c = db.query(
+                    VerticesTable.TABLE_NAME,  // The table to query
+                    columns,                   // The columns to return
+                    whereClause,               // The columns for the WHERE clause
+                    whereArgs,                 // The values for the WHERE clause
+                    groupBy,                   // don't group the rows
+                    having,                    // don't filter by row groups
+                    orderBy                    // The sort order
+            );
+            while (c.moveToNext()) {
                 VerticesContract vc = new VerticesContract();
-                vc.sync(jsonObjectVR);
-
-                ContentValues values = new ContentValues();
-
-                values.put(VerticesTable.COLUMN_CLUSTER_CODE, vc.getCluster_code());
-                values.put(VerticesTable.COLUMN_POLY_LAT, vc.getPoly_lat());
-                values.put(VerticesTable.COLUMN_POLY_LANG, vc.getPoly_lng());
-                values.put(VerticesTable.COLUMN_POLY_SEQ, vc.getPoly_seq());
-
-                db.insert(VerticesTable.TABLE_NAME, null, values);
+                allVC.add(vc.hydrate(c));
             }
-            db.close();
-
-        } catch (Exception e) {
-
-        }
-    }
-
-    public Integer syncVersionApp(JSONObject VersionList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(VersionAppContract.VersionAppTable.TABLE_NAME, null, null);
-        long count = 0;
-        try {
-            JSONObject jsonObjectCC = ((JSONArray) VersionList.get(VersionAppContract.VersionAppTable.COLUMN_VERSION_PATH)).getJSONObject(0);
-            VersionAppContract Vc = new VersionAppContract();
-            Vc.Sync(jsonObjectCC);
-
-            ContentValues values = new ContentValues();
-
-            values.put(VersionAppContract.VersionAppTable.COLUMN_PATH_NAME, Vc.getPathname());
-            values.put(VersionAppContract.VersionAppTable.COLUMN_VERSION_CODE, Vc.getVersioncode());
-            values.put(VersionAppContract.VersionAppTable.COLUMN_VERSION_NAME, Vc.getVersionname());
-
-            count = db.insert(VersionAppContract.VersionAppTable.TABLE_NAME, null, values);
-            if (count > 0) count = 1;
-
-        } catch (Exception ignored) {
         } finally {
-            db.close();
+            if (c != null) {
+                c.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
-
-        return (int) count;
+        return allVC;
     }
 
     public VersionAppContract getVersionApp() {
@@ -1096,8 +1089,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allVC;
     }
 
-
-    //Get All EnumBlock
     public List<EnumBlockContract> getEnumBlock() {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1140,7 +1131,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allEB;
     }
 
-    //Get All Districts
     public List<DistrictContract> getDistrictProv() {
 
         SQLiteDatabase db = this.getReadableDatabase();

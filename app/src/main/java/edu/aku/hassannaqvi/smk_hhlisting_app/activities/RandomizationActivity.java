@@ -196,7 +196,7 @@ public class RandomizationActivity extends MenuActivity {
         protected Boolean doInBackground(final String... args) {
             try {
 
-                ArrayList<ListingContract> listingContracts = db.randomLisiting(clustercode);
+                ArrayList<ListingContract> listingContracts = db.getRandomLisiting(clustercode);
 
                 if (listingContracts.size() > 20) {
 
