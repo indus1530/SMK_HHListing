@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="70"
                         android:hint="@string/cluster_number"
-                        android:maxLength="9"
+                        android:maxLength="6"
                         android:onTextChanged="@{callback.txtPSUOnTextChanged}" />
 
                     <ImageButton
