@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import edu.aku.hassannaqvi.smk_hhlisting_app.CONSTANTS;
 import edu.aku.hassannaqvi.smk_hhlisting_app.R;
 import edu.aku.hassannaqvi.smk_hhlisting_app.activities.other.LoginActivity;
 import edu.aku.hassannaqvi.smk_hhlisting_app.activities.other.MainActivity;
@@ -37,6 +38,7 @@ public class SetupActivity extends AppCompatActivity {
 
     private static final String TAG = SetupActivity.class.getName();
     private ActivitySetupBinding bi;
+    private static String fmDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,12 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        if (getIntent().getBooleanExtra(CONSTANTS.MAIN_DT_FLAG, false)) {
+            bi.formdate.setEnabled(true);
+        } else {
+            bi.formdate.setText(fmDate);
+        }
+
     }
 
 
@@ -108,7 +116,8 @@ public class SetupActivity extends AppCompatActivity {
         lc.setTagId(sharedPref.getString("tagName", null));
         lc.setAppVer(MainApp.appInfo.getAppVersion());
         lc.setHhDT(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date().getTime()));
-        lc.setHhDT01(bi.formdate.getText().toString());
+        fmDate = bi.formdate.getText().toString();
+        lc.setHhDT01(fmDate);
         lc.setEnumCode(MainApp.enumCode);
         lc.setClusterCode(Members.txtClusterCode.get());
         lc.setEnumStr(MainApp.enumStr);

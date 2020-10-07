@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import edu.aku.hassannaqvi.smk_hhlisting_app.CONSTANTS;
 import edu.aku.hassannaqvi.smk_hhlisting_app.R;
 import edu.aku.hassannaqvi.smk_hhlisting_app.activities.map.MapsActivity;
 import edu.aku.hassannaqvi.smk_hhlisting_app.activities.menu.MenuActivity;
@@ -187,7 +188,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else if (id == REQUEST_PSU_EXIST) {
-            startActivity(new Intent(MainActivity.this, SetupActivity.class));
+            startActivity(new Intent(MainActivity.this, SetupActivity.class).putExtra(CONSTANTS.MAIN_DT_FLAG, true));
         }
     }
 
@@ -214,6 +215,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
         super.onResume();
         onSettingVisibilityContent(View.GONE);
     }
+
 
     //Screen Buttons
     public void CheckClusterBtn(View v) {
@@ -260,7 +262,7 @@ public class MainActivity extends MenuActivity implements WarningActivityInterfa
         if (MainApp.PSUExist(MainApp.enumCode)) {
             alertPSU();
         } else {
-            startActivity(new Intent(this, SetupActivity.class));
+            startActivity(new Intent(this, SetupActivity.class).putExtra(CONSTANTS.MAIN_DT_FLAG, true));
         }
     }
 

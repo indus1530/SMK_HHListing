@@ -96,6 +96,7 @@
                             android:id="@+id/formdate"
                             style="@style/EditTextNum"
                             android:layout_width="match_parent"
+                            android:enabled="false"
                             android:focusable="false"
                             android:hint="DD/MM/YYYY"
                             app:dateFormat="dd-MM-yyyy"

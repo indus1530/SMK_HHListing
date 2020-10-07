@@ -18,6 +18,7 @@ class CONSTANTS {
         //Main Activity
         const val REQUEST_APP_UPDATE = 1
         const val REQUEST_PSU_EXIST = 2
+        const val MAIN_DT_FLAG = "main_dt_flag"
 
         //Login Result Code
         const val LOGIN_RESULT_CODE = 10101
