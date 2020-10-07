@@ -24,7 +24,7 @@ public class VersionAppContract {
         return this;
     }
 
-    public VersionAppContract Hydrate(Cursor cursor) {
+    public VersionAppContract hydrate(Cursor cursor) {
         this.versioncode = cursor.getString(cursor.getColumnIndex(VersionAppTable.COLUMN_VERSION_CODE));
         this.pathname = cursor.getString(cursor.getColumnIndex(VersionAppTable.COLUMN_PATH_NAME));
         this.versionname = cursor.getString(cursor.getColumnIndex(VersionAppTable.COLUMN_VERSION_NAME));

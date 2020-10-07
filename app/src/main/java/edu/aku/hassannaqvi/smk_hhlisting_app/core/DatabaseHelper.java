@@ -1076,7 +1076,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     orderBy                    // The sort order
             );
             while (c.moveToNext()) {
-                allVC.Hydrate(c);
+                allVC.hydrate(c);
             }
         } finally {
             if (c != null) {
